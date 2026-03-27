@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography, Avatar, Dropdown, Tooltip, Button } from 'antd';
+import type { DraggableProvided, DraggableStateSnapshot } from '@hello-pangea/dnd';
 import type { MenuProps } from 'antd';
 import { UserOutlined, DeleteOutlined, ArrowUpOutlined, ArrowRightOutlined, ArrowDownOutlined } from '@ant-design/icons';
 import { type Task, type User } from '../types';
@@ -9,8 +10,8 @@ const { Text } = Typography;
 
 interface Props {
   task: Task;
-  provided: any;
-  snapshot: any;
+  provided: DraggableProvided;
+  snapshot: DraggableStateSnapshot;
   members?: User[];
   onAssign?: (taskId: number, userId: number) => void;
   onDelete?: (taskId: number) => void;
