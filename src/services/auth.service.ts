@@ -22,20 +22,16 @@ export const authService = {
   },
 
   // 🔄 SWITCH ROLE
+  // 🔄 SWITCH ROLE (MOCKED for Demo)
   switchRole: async (role: string) => {
-    const response = await api.put(`/users/switch-role?role=${role}`);
-    const result = response.data;
-    
-    if (result?.token) {
-      localStorage.setItem('token', result.token);
-      localStorage.setItem('user', JSON.stringify({
-        id: result.id,
-        email: result.email,
-        name: result.name,
-        role: result.role
-      }));
+    console.log("[Mock Auth] Switching role to:", role);
+    const currentUser = authService.getCurrentUser();
+    if (currentUser) {
+      const newUser = { ...currentUser, role: role as 'ADMIN' | 'USER' };
+      localStorage.setItem('user', JSON.stringify(newUser));
+      return newUser;
     }
-    return result;
+    return null;
   },
 
   // 📝 REGISTER
@@ -53,9 +49,12 @@ export const authService = {
   },
 
   // 👥 GET ALL USERS
+  // 👥 GET ALL USERS (MOCKED for Demo)
   getAllUsers: async () => {
-    const response = await api.get('/users');
-    return response.data as User[];
+    return [
+      { id: 1, name: 'Demo User', email: 'demo@taskflow.com', role: 'ADMIN' },
+      { id: 2, name: 'John Doe', email: 'john@example.com', role: 'USER' }
+    ] as User[];
   },
 
   // 👤 CURRENT USER
