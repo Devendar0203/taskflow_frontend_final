@@ -19,8 +19,10 @@ const Register: React.FC = () => {
       });
       message.success('Registration successful! Please log in.');
       navigate('/login');
-    } catch (error) {
-      message.error('Registration failed. Please try again.');
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.message || error.message || 'Registration failed. Please try again.';
+      message.error(errorMsg);
+      console.error('Registration error:', error);
     } finally {
       setLoading(false);
     }

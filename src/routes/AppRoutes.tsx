@@ -30,8 +30,8 @@ const AppRoutes: React.FC = () => {
   return (
     <Suspense fallback={<TopLoader />}>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Navigate to={defaultRoute} replace />} />
+        <Route path="/register" element={<Navigate to={defaultRoute} replace />} />
         
         {/* Protected Routes */}
         <Route element={<PrivateRoute />}>

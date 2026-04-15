@@ -8,7 +8,16 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    const isPublicEndpoint = config.url === '/users/login' || (config.url === '/users' && config.method === 'post');
+    const method = config.method?.toLowerCase();
+    const url = config.url;
+    
+    // Check if it's a public endpoint
+    const isLogin = url === '/users/login';
+    const isRegister = url === '/users' && method === 'post';
+    const isPublicEndpoint = isLogin || isRegister;
+    
+    console.log(`[API Request] ${method?.toUpperCase()} ${url} | Public: ${isPublicEndpoint} | Token: ${!!token}`);
+
     if (token && !isPublicEndpoint) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -21,7 +30,9 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const isAuthEndpoint = error.config?.url?.includes('/login');
+    const config = error.config || {};
+    console.error(`❌ API Error [${config.method?.toUpperCase()}] ${config.url}:`, error.response?.status, error.response?.data || error.message);
+    const isAuthEndpoint = config.url?.includes('/login');
     if (error.response && error.response.status === 401 && !isAuthEndpoint) {
       console.log("🔒 Session expired. Redirecting to login...");
 

@@ -1,37 +1,33 @@
-import api from './api';
+import { mockService } from './mock.service';
 import { type Task, type TaskStatus } from '../types';
 
 export const taskService = {
   createTask: async (data: Partial<Task>) => {
-    const response = await api.post('/tasks', data);
-    return response.data;
+    return mockService.createTask(data);
   },
   getMyTasks: async () => {
-    const response = await api.get('/tasks');
-    return response.data as Task[];
+    return mockService.getTasks();
   },
   updateTask: async (id: number, data: Partial<Task>) => {
-    const response = await api.put(`/tasks/${id}`, data);
-    return response.data;
+    return mockService.updateTask(id, data);
   },
   updateTaskStatus: async (id: number, status: TaskStatus) => {
-    const response = await api.patch(`/tasks/${id}/status`, null, { params: { status } });
-    return response.data;
+    return mockService.updateTask(id, { status });
   },
-  assignTask: async (taskId: number, userId: number) => {
-    const response = await api.post(`/tasks/${taskId}/assign/${userId}`);
-    return response.data;
+  assignTask: async (_taskId: number, _userId: number) => {
+    // Mock success
+    return { success: true };
   },
   getTasksByProject: async (groupId: number) => {
-    const response = await api.get(`/tasks/group/${groupId}`);
-    return response.data as Task[];
+    return mockService.getTasks(groupId);
   },
   getProjectProgress: async (groupId: number) => {
-    const response = await api.get(`/tasks/project/${groupId}/progress`);
-    return response.data;
+    const tasks = await mockService.getTasks(groupId);
+    if (tasks.length === 0) return 0;
+    const completed = tasks.filter((t: Task) => t.status === 'DONE').length;
+    return (completed / tasks.length) * 100;
   },
   deleteTask: async (id: number) => {
-    const response = await api.delete(`/tasks/${id}`);
-    return response.data;
+    return mockService.deleteTask(id);
   }
 };

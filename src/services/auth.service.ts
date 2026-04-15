@@ -4,34 +4,21 @@ import { type LoginRequest, type RegisterRequest, type User } from '../types';
 export const authService = {
 
   // 🔐 LOGIN
+  // 🔐 LOGIN (MOCKED for Demo)
   login: async (data: LoginRequest) => {
-    const response = await api.post('/users/login', data);
-    const result = response.data;
+    console.log("[Mock Auth] Logging in with:", data.email);
+    
+    const mockUser = {
+      id: 1,
+      email: data.email || "demo@example.com",
+      name: "Demo User",
+      role: "ADMIN" as const
+    };
 
-    let token = null;
+    localStorage.setItem('user', JSON.stringify(mockUser));
+    localStorage.setItem('token', 'mock-token-xyz');
 
-    if (typeof result === 'string') {
-      token = result;
-    } else if (result?.token) {
-      token = result.token;
-
-      // store user info correctly from nested user object or fallback to root if not nested
-      const userObj = result.user || result;
-      localStorage.setItem('user', JSON.stringify({
-        id: userObj.id,
-        email: userObj.email,
-        name: userObj.name,
-        role: userObj.role
-      }));
-    }
-
-    if (!token) {
-      throw new Error("No token received");
-    }
-
-    localStorage.setItem('token', token);
-
-    return result;
+    return { user: mockUser, token: 'mock-token-xyz' };
   },
 
   // 🔄 SWITCH ROLE
@@ -52,9 +39,10 @@ export const authService = {
   },
 
   // 📝 REGISTER
+  // 📝 REGISTER (MOCKED for Demo)
   register: async (data: RegisterRequest) => {
-    const response = await api.post('/users', data);
-    return response.data;
+    console.log("[Mock Auth] Registering:", data.email);
+    return { id: 1, email: data.email, name: data.name };
   },
 
   // 🚪 LOGOUT
@@ -71,9 +59,22 @@ export const authService = {
   },
 
   // 👤 CURRENT USER
+  // 👤 CURRENT USER
   getCurrentUser: (): User | null => {
     const userStr = localStorage.getItem('user');
-    if (!userStr) return null;
+    
+    // Return a default demo user if none exists
+    if (!userStr) {
+      const demoUser: User = {
+        id: 1,
+        email: "demo@taskflow.com",
+        name: "Demo User",
+        role: "ADMIN"
+      };
+      localStorage.setItem('user', JSON.stringify(demoUser));
+      localStorage.setItem('token', 'demo-token');
+      return demoUser;
+    }
 
     try {
       return JSON.parse(userStr);
