@@ -73,7 +73,7 @@ export const mockService = {
   },
 
   // Members (Mocking users)
-  getGroupMembers: async (groupId: number) => {
+  getGroupMembers: async (_groupId: number) => {
     return [
       { id: 1, name: 'Demo User', email: 'demo@taskflow.com', role: 'ADMIN' }
     ] as User[];

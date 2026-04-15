@@ -5,9 +5,8 @@ import PrivateRoute from './PrivateRoute';
 import MainLayout from '../components/layout/MainLayout';
 import { authService } from '../services/auth.service';
 
+
 // Lazy loading core pages for code splitting
-const Login = React.lazy(() => import('../pages/Login'));
-const Register = React.lazy(() => import('../pages/Register'));
 const Dashboard = React.lazy(() => import('../pages/Dashboard'));
 const Project = React.lazy(() => import('../pages/Project'));
 const MyTasks = React.lazy(() => import('../pages/MyTasks'));

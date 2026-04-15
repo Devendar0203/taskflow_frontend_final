@@ -23,9 +23,17 @@ export const taskService = {
   },
   getProjectProgress: async (groupId: number) => {
     const tasks = await mockService.getTasks(groupId);
-    if (tasks.length === 0) return 0;
-    const completed = tasks.filter((t: Task) => t.status === 'DONE').length;
-    return (completed / tasks.length) * 100;
+    const todo = tasks.filter((t: Task) => t.status === 'TODO').length;
+    const inProgress = tasks.filter((t: Task) => t.status === 'IN_PROGRESS').length;
+    const done = tasks.filter((t: Task) => t.status === 'DONE').length;
+    
+    return {
+      todo,
+      inProgress,
+      done,
+      totalTasks: tasks.length,
+      completion: tasks.length > 0 ? (done / tasks.length) * 100 : 0
+    };
   },
   deleteTask: async (id: number) => {
     return mockService.deleteTask(id);
