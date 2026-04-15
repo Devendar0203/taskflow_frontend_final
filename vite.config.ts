@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
 
-  base: "/TASK-FLOW-FRONTEND/",   // ✅ ADD THIS (VERY IMPORTANT)
+  base: "/",
 
   server: {
     proxy: {
