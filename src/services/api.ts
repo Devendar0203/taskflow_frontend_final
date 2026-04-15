@@ -1,45 +1,36 @@
 import axios from "axios";
 
+// Creating the API instance
 const api = axios.create({
-  baseURL: "/api", // changed to use Vite proxy to prevent CORS errors
+  baseURL: "/api",
 });
 
-// ✅ Attach token to every request (except login/register)
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    const method = config.method?.toLowerCase();
-    const url = config.url;
-    
-    // Check if it's a public endpoint
-    const isLogin = url === '/users/login';
-    const isRegister = url === '/users' && method === 'post';
-    const isPublicEndpoint = isLogin || isRegister;
-    
-    console.log(`[API Request] ${method?.toUpperCase()} ${url} | Public: ${isPublicEndpoint} | Token: ${!!token}`);
+// ☢️ NUCLEAR OPTION: Mock all requests globally
+// This ensures that even if a service is called, it stays in the browser.
+api.interceptors.request.use((config) => {
+  const method = config.method?.toUpperCase();
+  const url = config.url;
+  
+  console.log(`[Global Mock Interceptor] ${method} ${url}`);
 
-    if (token && !isPublicEndpoint) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+  // Return a resolved promise with generic success data
+  // This prevents the request from actually being sent.
+  throw new axios.Cancel(`MOCK_DATA_REQUEST: ${method} ${url}`);
+});
 
-// ✅ Handle expired/invalid token
+// Catch the cancellation and return mock response
+// We treat cancellation as a way to "branch" into mock logic.
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const config = error.config || {};
-    console.error(`❌ API Error [${config.method?.toUpperCase()}] ${config.url}:`, error.response?.status, error.response?.data || error.message);
-    const isAuthEndpoint = config.url?.includes('/login');
-    if (error.response && error.response.status === 401 && !isAuthEndpoint) {
-      console.log("🔒 Session expired. Redirecting to login...");
-
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-
-      window.location.href = "/login";
+    if (axios.isCancel(error)) {
+      return Promise.resolve({
+        data: { message: "Mock success", success: true },
+        status: 200,
+        statusText: "OK",
+        headers: {},
+        config: {}
+      });
     }
     return Promise.reject(error);
   }

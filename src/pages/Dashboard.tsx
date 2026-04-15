@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Button, Row, Col, Empty, Progress, Skeleton } from 'antd';
+import { Typography, Button, Row, Col, Empty, Progress, Skeleton, Badge } from 'antd';
 import { PlusOutlined, ProjectOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -128,7 +128,7 @@ const Dashboard: React.FC = () => {
     <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%', display: 'flex', flexDirection: 'column' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 16 }}>
         <div>
-          <Title level={2} style={{ margin: 0, color: '#172b4d' }}>All Projects</Title>
+          <Title level={2} style={{ margin: 0, color: '#172b4d' }}>All Projects <Badge status="processing" text="Demo Version v1.02" style={{ marginLeft: 8 }} /></Title>
           <Text type="secondary" style={{ color: '#5e6c84' }}>Manage workspaces and track overall progress.</Text>
         </div>
         {user?.role === 'ADMIN' && (
